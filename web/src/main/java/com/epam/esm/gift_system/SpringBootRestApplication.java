@@ -23,7 +23,6 @@ public class SpringBootRestApplication implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         PageableHandlerMethodArgumentResolver pageableResolver = new PageableHandlerMethodArgumentResolver();
-        pageableResolver.setOneIndexedParameters(true);
         pageableResolver.setFallbackPageable(PageRequest.of(1, 2));
         resolvers.add(pageableResolver);
         WebMvcConfigurer.super.addArgumentResolvers(resolvers);

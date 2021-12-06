@@ -23,8 +23,7 @@ public enum Permission {
 
     STATISTICS_READ("statistics:read"),
 
-    AUTH_SIGN_UP("auth:sign_up"),
-    AUTH_LOGOUT("auth:logout");
+    AUTH_SIGN_UP("auth:sign_up");
 
     private final String permission;
 }

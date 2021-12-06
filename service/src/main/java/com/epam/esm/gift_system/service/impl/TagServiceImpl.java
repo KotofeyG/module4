@@ -12,6 +12,7 @@ import com.epam.esm.gift_system.service.exception.GiftSystemException;
 import com.epam.esm.gift_system.service.validator.EntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -75,8 +76,10 @@ public class TagServiceImpl implements TagService {
         if (!validator.isPageExists(pageable, tagPage.getTotalElements())) {
             throw new GiftSystemException(NON_EXISTENT_PAGE);
         }
-        return new CustomPage<>(tagPage.getContent(), tagPage.getPageable(), tagPage.getTotalElements())
+        return new PageImpl<>(tagPage.getContent(), tagPage.getPageable(), tagPage.getTotalElements())
                 .map(dtoConverter::convertEntityIntoDto);
+//        return new CustomPage<>(tagPage.getContent(), tagPage.getPageable(), tagPage.getTotalElements())
+//                .map(dtoConverter::convertEntityIntoDto);
     }
 
     @Override
