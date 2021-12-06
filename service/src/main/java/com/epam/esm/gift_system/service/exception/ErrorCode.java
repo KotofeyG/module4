@@ -22,6 +22,9 @@ public class ErrorCode {
 
     public static final int AUTHENTICATION_REQUIREMENT = 40110;
 
+    public static final int FORBIDDEN_ACCESS = 40310;
+    public static final int INVALID_CREDENTIALS = 40320;
+
     public static final int NON_EXISTENT_ENTITY = 40410;
 
     public static final int USED_ENTITY = 40910;

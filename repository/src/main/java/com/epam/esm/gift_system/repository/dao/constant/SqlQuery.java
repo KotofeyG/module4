@@ -1,8 +1,11 @@
 package com.epam.esm.gift_system.repository.dao.constant;
 
 public class SqlQuery {
-    public static final String COUNT_TAG_USAGE = "SELECT count(*) FROM tags_certificates WHERE tag_id=?";
-    public static final String COUNT_CERTIFICATE_USAGE = "SELECT count(*) FROM orders_certificates WHERE gift_certificate_id=?";
+    public static final String FIND_CERTIFICATES_BY_SEARCH_PART =
+            "SELECT c FROM GiftCertificate c WHERE c.name LIKE %:searchPart% OR c.description LIKE %:searchPart%";
+    public static final String FIND_CERTIFICATES_BY_TAG_NAMES_AND_SEARCH_PART =
+            "SELECT c FROM GiftCertificate c JOIN c.tagList tl WHERE tl.name IN :tagNameList" +
+                    " AND (c.name LIKE %:searchPart% OR c.description LIKE %:searchPart%) GROUP BY c HAVING COUNT(tl)>=:tagNumber";
     public static final String FIND_MOST_POPULAR_TAG_OF_RICHEST_USER = """
             SELECT t.id, t.name FROM tags as t
             JOIN tags_certificates as tc ON tc.tag_id=t.id

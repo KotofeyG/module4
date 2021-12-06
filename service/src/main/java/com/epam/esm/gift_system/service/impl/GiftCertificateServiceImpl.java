@@ -3,12 +3,12 @@ package com.epam.esm.gift_system.service.impl;
 import com.epam.esm.gift_system.repository.dao.GiftCertificateRepository;
 import com.epam.esm.gift_system.repository.dao.OrderRepository;
 import com.epam.esm.gift_system.repository.model.GiftCertificate;
-import com.epam.esm.gift_system.repository.model.GiftCertificateAttribute;
 import com.epam.esm.gift_system.repository.model.Tag;
 import com.epam.esm.gift_system.service.DtoConverterService;
 import com.epam.esm.gift_system.service.EntityConverterService;
 import com.epam.esm.gift_system.service.GiftCertificateService;
 import com.epam.esm.gift_system.service.TagService;
+import com.epam.esm.gift_system.service.dto.CustomPage;
 import com.epam.esm.gift_system.service.dto.GiftCertificateAttributeDto;
 import com.epam.esm.gift_system.service.dto.GiftCertificateDto;
 import com.epam.esm.gift_system.service.dto.TagDto;
@@ -16,7 +16,7 @@ import com.epam.esm.gift_system.service.exception.GiftSystemException;
 import com.epam.esm.gift_system.service.validator.EntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +29,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.epam.esm.gift_system.service.constant.GeneralConstant.EMPTY_STRING;
+import static com.epam.esm.gift_system.service.constant.GeneralConstant.ID;
 import static com.epam.esm.gift_system.service.constant.GeneralConstant.NULLABLE_ID;
 import static com.epam.esm.gift_system.service.constant.GeneralConstant.ZERO;
 import static com.epam.esm.gift_system.service.exception.ErrorCode.CERTIFICATE_INVALID_DESCRIPTION;
@@ -43,6 +45,7 @@ import static com.epam.esm.gift_system.service.exception.ErrorCode.TAG_INVALID_N
 import static com.epam.esm.gift_system.service.exception.ErrorCode.USED_ENTITY;
 import static com.epam.esm.gift_system.service.validator.EntityValidator.ValidationType.SOFT;
 import static com.epam.esm.gift_system.service.validator.EntityValidator.ValidationType.STRONG;
+import static org.springframework.data.domain.Sort.*;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -156,25 +159,41 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public Page<GiftCertificateDto> findAll(Pageable pageable) {
-        return null;
+        throw new UnsupportedOperationException("findAll method isn't implemented in GiftCertificateServiceImpl class");
     }
 
     @Override
     public Page<GiftCertificateDto> findByAttributes(GiftCertificateAttributeDto attributeDto, Pageable pageable) {
-        checkSearchParams(attributeDto, pageable);
-        GiftCertificateAttribute attribute = entityConverter.convertDtoIntoEntity(attributeDto);
-        Page<GiftCertificate> certificatePage = certificateRepository.findByAttributes(attribute, pageable);
-        if (!validator.isPageExists(pageable, certificatePage.getTotalElements())) {
-            throw new GiftSystemException(NON_EXISTENT_PAGE);
-        }
-        List<GiftCertificateDto> certificateDtoList = certificatePage.stream().map(dtoConverter::convertEntityIntoDto).toList();
-        return new PageImpl<>(certificateDtoList, pageable, certificatePage.getTotalElements());
-    }
-
-    private void checkSearchParams(GiftCertificateAttributeDto attributeDto, Pageable pageable) {
         if (!validator.isAttributeDtoValid(attributeDto)) {
             throw new GiftSystemException(INVALID_ATTRIBUTE_LIST);
         }
+        setDefaultParamsIfAbsent(attributeDto);
+        Pageable sortedPageable = buildSortedPageable(attributeDto.getSortingFieldList(), attributeDto.getOrderSort(), pageable);
+        Page<GiftCertificate> certificatePage = Objects.nonNull(attributeDto.getTagNameList())
+                ? certificateRepository.findByAttributes(attributeDto.getTagNameList()
+                , attributeDto.getTagNameList().size(), attributeDto.getSearchPart(), sortedPageable)
+                : certificateRepository.findByAttributes(attributeDto.getSearchPart(), sortedPageable);
+        if (!validator.isPageExists(pageable, certificatePage.getTotalElements())) {
+            throw new GiftSystemException(NON_EXISTENT_PAGE);
+        }
+        return new CustomPage<>(certificatePage.getContent(), certificatePage.getPageable(), certificatePage.getTotalElements())
+                .map(dtoConverter::convertEntityIntoDto);
+    }
+
+    private void setDefaultParamsIfAbsent(GiftCertificateAttributeDto attributeDto) {
+        if (Objects.isNull(attributeDto.getSearchPart())) {
+            attributeDto.setSearchPart(EMPTY_STRING);
+        }
+    }
+
+    private Pageable buildSortedPageable(List<String> sortingFieldList, String orderSort, Pageable pageable) {
+        Direction direction = Objects.nonNull(orderSort)
+                ? Direction.fromString(orderSort)
+                : Direction.ASC;
+        return CollectionUtils.isEmpty(sortingFieldList)
+                ? PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), by(direction, ID))
+                : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()
+                , by(direction, sortingFieldList.toArray(String[]::new)));
     }
 
     @Override

@@ -38,7 +38,7 @@ public class Order {
     private LocalDateTime orderDate;
     @Column(name = "order_cost", nullable = false, updatable = false)
     private BigDecimal cost;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
     @ManyToMany(fetch = FetchType.EAGER)

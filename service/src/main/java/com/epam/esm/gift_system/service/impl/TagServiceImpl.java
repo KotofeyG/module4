@@ -6,16 +6,14 @@ import com.epam.esm.gift_system.repository.model.Tag;
 import com.epam.esm.gift_system.service.DtoConverterService;
 import com.epam.esm.gift_system.service.EntityConverterService;
 import com.epam.esm.gift_system.service.TagService;
+import com.epam.esm.gift_system.service.dto.CustomPage;
 import com.epam.esm.gift_system.service.dto.TagDto;
 import com.epam.esm.gift_system.service.exception.GiftSystemException;
 import com.epam.esm.gift_system.service.validator.EntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 import static com.epam.esm.gift_system.service.constant.GeneralConstant.NULLABLE_ID;
 import static com.epam.esm.gift_system.service.exception.ErrorCode.NON_EXISTENT_ENTITY;
@@ -77,8 +75,8 @@ public class TagServiceImpl implements TagService {
         if (!validator.isPageExists(pageable, tagPage.getTotalElements())) {
             throw new GiftSystemException(NON_EXISTENT_PAGE);
         }
-        List<TagDto> tagDtoList = tagPage.stream().map(dtoConverter::convertEntityIntoDto).toList();
-        return new PageImpl<>(tagDtoList, pageable, tagPage.getTotalElements());
+        return new CustomPage<>(tagPage.getContent(), tagPage.getPageable(), tagPage.getTotalElements())
+                .map(dtoConverter::convertEntityIntoDto);
     }
 
     @Override

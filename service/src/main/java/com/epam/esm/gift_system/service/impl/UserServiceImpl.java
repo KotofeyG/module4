@@ -7,19 +7,17 @@ import com.epam.esm.gift_system.repository.model.User;
 import com.epam.esm.gift_system.service.DtoConverterService;
 import com.epam.esm.gift_system.service.EntityConverterService;
 import com.epam.esm.gift_system.service.UserService;
+import com.epam.esm.gift_system.service.dto.CustomPage;
 import com.epam.esm.gift_system.service.dto.ResponseOrderDto;
 import com.epam.esm.gift_system.service.dto.UserDto;
 import com.epam.esm.gift_system.service.exception.GiftSystemException;
 import com.epam.esm.gift_system.service.validator.EntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static com.epam.esm.gift_system.service.constant.GeneralConstant.NULLABLE_ID;
 import static com.epam.esm.gift_system.service.dto.UserDto.Role.*;
@@ -55,7 +53,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto create(UserDto userDto) {
         checkUserValidation(userDto);
-        setUserRequiredParams(userDto);
+        setCreatedUserParams(userDto);
         User user = entityConverter.convertDtoIntoEntity(userDto);
         return dtoConverter.convertEntityIntoDto(userRepository.save(user));
     }
@@ -72,7 +70,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void setUserRequiredParams(UserDto userDto) {
+    private void setCreatedUserParams(UserDto userDto) {
         userDto.setId(NULLABLE_ID);
         userDto.setRole(USER);
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -108,8 +106,8 @@ public class UserServiceImpl implements UserService {
         if (!validator.isPageExists(pageable, userPage.getTotalElements())) {
             throw new GiftSystemException(NON_EXISTENT_PAGE);
         }
-        List<UserDto> userDtoList = userPage.stream().map(dtoConverter::convertEntityIntoDto).toList();
-        return new PageImpl<>(userDtoList, pageable, userPage.getTotalElements());
+        return new CustomPage<>(userPage.getContent(), userPage.getPageable(), userPage.getTotalElements())
+                .map(dtoConverter::convertEntityIntoDto);
     }
 
     @Override
@@ -121,8 +119,8 @@ public class UserServiceImpl implements UserService {
         if (!validator.isPageExists(pageable, orderPage.getTotalElements())) {
             throw new GiftSystemException(NON_EXISTENT_PAGE);
         }
-        List<ResponseOrderDto> orderDtoList = orderPage.stream().map(dtoConverter::convertEntityIntoDto).toList();
-        return new PageImpl<>(orderDtoList, pageable, orderPage.getTotalElements());
+        return new CustomPage<>(orderPage.getContent(), orderPage.getPageable(), orderPage.getTotalElements())
+                .map(dtoConverter::convertEntityIntoDto);
     }
 
     @Override

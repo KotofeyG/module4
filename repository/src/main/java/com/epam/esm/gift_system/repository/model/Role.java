@@ -12,7 +12,7 @@ import static com.epam.esm.gift_system.repository.model.Permission.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum Role {
     ADMIN(Set.of(TAGS_CREATE, TAGS_DELETE, CERTIFICATES_CREATE, CERTIFICATES_UPDATE, CERTIFICATES_DELETE, ORDERS_CREATE
-            , ORDERS_READ, USERS_CREATE, USERS_READ, USERS_DELETE, STATISTICS_READ, AUTH_LOGOUT)),
+            , ORDERS_READ, USERS_CREATE, USERS_READ, USERS_DELETE, STATISTICS_READ, AUTH_SIGN_UP, AUTH_LOGOUT)),
     USER(Set.of(AUTH_LOGOUT));
 
     private final Set<Permission> permissionSet;

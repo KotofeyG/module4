@@ -8,13 +8,13 @@ import com.epam.esm.gift_system.service.DtoConverterService;
 import com.epam.esm.gift_system.service.GiftCertificateService;
 import com.epam.esm.gift_system.service.OrderService;
 import com.epam.esm.gift_system.service.UserService;
+import com.epam.esm.gift_system.service.dto.CustomPage;
 import com.epam.esm.gift_system.service.dto.RequestOrderDto;
 import com.epam.esm.gift_system.service.dto.ResponseOrderDto;
 import com.epam.esm.gift_system.service.exception.GiftSystemException;
 import com.epam.esm.gift_system.service.validator.EntityValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,8 +89,8 @@ public class OrderServiceImpl implements OrderService {
         if (!validator.isPageExists(pageable, orderPage.getTotalElements())) {
             throw new GiftSystemException(NON_EXISTENT_PAGE);
         }
-        List<ResponseOrderDto> orderDtoList = orderPage.stream().map(dtoConverter::convertEntityIntoDto).toList();
-        return new PageImpl<>(orderDtoList, pageable, orderPage.getTotalElements());
+        return new CustomPage<>(orderPage.getContent(), orderPage.getPageable(), orderPage.getTotalElements())
+                .map(dtoConverter::convertEntityIntoDto);
     }
 
     @Override

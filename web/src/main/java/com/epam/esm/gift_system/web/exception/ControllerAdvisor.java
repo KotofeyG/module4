@@ -8,6 +8,8 @@ import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,7 +20,9 @@ import java.util.Map;
 
 import static com.epam.esm.gift_system.service.exception.ErrorCode.BAD_REQUEST;
 import static com.epam.esm.gift_system.service.exception.ErrorCode.DATA_BASE_ERROR;
+import static com.epam.esm.gift_system.service.exception.ErrorCode.FORBIDDEN_ACCESS;
 import static com.epam.esm.gift_system.service.exception.ErrorCode.INVALID_ATTRIBUTE_LIST;
+import static com.epam.esm.gift_system.service.exception.ErrorCode.INVALID_CREDENTIALS;
 import static com.epam.esm.gift_system.service.exception.ErrorCode.UNREADABLE_MESSAGE;
 
 @RestControllerAdvice
@@ -60,6 +64,16 @@ public class ControllerAdvisor {
     @ExceptionHandler(PropertyReferenceException.class)
     public ResponseEntity<Object> handlePropertyReferenceException(Locale locale) {
         return new ResponseEntity<>(createResponse(INVALID_ATTRIBUTE_LIST, locale), getHttpStatusByCode(INVALID_ATTRIBUTE_LIST));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(Locale locale) {
+        return new ResponseEntity<>(createResponse(FORBIDDEN_ACCESS, locale), getHttpStatusByCode(FORBIDDEN_ACCESS));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(Locale locale) {
+        return new ResponseEntity<>(createResponse(INVALID_CREDENTIALS, locale), getHttpStatusByCode(INVALID_CREDENTIALS));
     }
 
     private Map<String, Object> createResponse(int errorCode, Locale locale) {

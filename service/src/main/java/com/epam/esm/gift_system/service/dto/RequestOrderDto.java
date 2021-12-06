@@ -1,6 +1,5 @@
 package com.epam.esm.gift_system.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestOrderDto {
-    @JsonProperty("user-id")
     private Long userId;
-    @JsonProperty("certificate-ids")
     private List<Long> certificateIdList;
 }

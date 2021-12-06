@@ -6,6 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class SecurityUserDetailsBuilder {
     private static final boolean ACTIVE = true;
 
+    private SecurityUserDetailsBuilder() {
+    }
+
     public static UserDetails create(User user) {
         return new SecurityUser(
                 user.getId(),

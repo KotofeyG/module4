@@ -97,16 +97,6 @@ public class EntityValidator {
                 && orderDto.getCertificateIdList().stream().allMatch(Objects::nonNull);
     }
 
-    public boolean isPageDataValid(Pageable pageable) {             //TODO
-        Integer size = pageable.getPageSize();
-        Integer page = pageable.getPageNumber();
-        return  Objects.nonNull(page) && Objects.nonNull(size) && size != ZERO && checkNumber(page) && checkNumber(size);
-    }
-
-    private boolean checkNumber(Number number) {
-        return String.valueOf(number).matches(PAGE_REGEX);
-    }
-
     public boolean isPageExists(Pageable pageable, Long totalNumber) {
         if (pageable.getPageNumber() == ZERO) {
             return true;

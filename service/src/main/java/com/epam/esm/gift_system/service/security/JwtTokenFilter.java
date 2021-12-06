@@ -1,5 +1,6 @@
 package com.epam.esm.gift_system.service.security;
 
+import com.epam.esm.gift_system.service.exception.GiftSystemException;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -13,7 +14,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Objects;
+
+import static com.epam.esm.gift_system.service.exception.ErrorCode.AUTHENTICATION_REQUIREMENT;
 
 @Component
 public class JwtTokenFilter extends GenericFilterBean {
@@ -29,8 +31,9 @@ public class JwtTokenFilter extends GenericFilterBean {
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
         if (Strings.isNotEmpty(token) && jwtTokenProvider.validateToken(token)) {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            if (Objects.nonNull(authentication)) {
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (!authentication.isAuthenticated()) {
+                throw new GiftSystemException(AUTHENTICATION_REQUIREMENT);
             }
         }
         chain.doFilter(request, response);

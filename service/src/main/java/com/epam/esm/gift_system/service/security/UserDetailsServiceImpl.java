@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import static com.epam.esm.gift_system.service.exception.ErrorCode.NON_EXISTENT_ENTITY;
+import static com.epam.esm.gift_system.service.exception.ErrorCode.INVALID_CREDENTIALS;
 import static com.epam.esm.gift_system.service.exception.ErrorCode.USER_INVALID_NAME;
 import static com.epam.esm.gift_system.service.validator.EntityValidator.ValidationType.STRONG;
 
-@Component
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
     private final EntityValidator validator;
@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (!validator.isNameValid(username, STRONG)) {
             throw new GiftSystemException(USER_INVALID_NAME);
         }
-        User user = userRepository.findByName(username).orElseThrow(() -> new GiftSystemException(NON_EXISTENT_ENTITY));
+        User user = userRepository.findByName(username).orElseThrow(() -> new GiftSystemException(INVALID_CREDENTIALS));
         return SecurityUserDetailsBuilder.create(user);
     }
 }
