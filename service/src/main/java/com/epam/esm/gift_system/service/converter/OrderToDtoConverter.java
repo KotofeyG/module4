@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class OrderToDtoConverter implements Converter<Order, ResponseOrderDto> {
     private final GiftCertificateToDtoConverter certificateToDtoConverter;
@@ -24,7 +26,7 @@ public class OrderToDtoConverter implements Converter<Order, ResponseOrderDto> {
                 .orderDate(source.getOrderDate())
                 .cost(source.getCost())
                 .userDto(userToDtoConverter.convert(source.getUser()))
-                .certificateList(source.getCertificateList().stream().map(certificateToDtoConverter::convert).toList())
+                .certificateList(source.getCertificateList().stream().map(certificateToDtoConverter::convert).collect(Collectors.toList()))
                 .build();
     }
 }

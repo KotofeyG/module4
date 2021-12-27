@@ -2,6 +2,7 @@ package com.epam.esm.gift_system.repository.model;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum GiftCertificateField {
     ID("id"), NAME("name"), DESCRIPTION("description"), PRICE("price"), DURATION("duration")
@@ -18,6 +19,6 @@ public enum GiftCertificateField {
     }
 
     public static List<String> getNameList() {
-        return Arrays.stream(GiftCertificateField.values()).map(GiftCertificateField::getName).toList();
+        return Arrays.stream(GiftCertificateField.values()).map(GiftCertificateField::getName).collect(Collectors.toList());
     }
 }

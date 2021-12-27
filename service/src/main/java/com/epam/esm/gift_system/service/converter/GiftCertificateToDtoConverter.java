@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class GiftCertificateToDtoConverter implements Converter<GiftCertificate, GiftCertificateDto> {
     private final TagToDtoConverter tagToDtoConverter;
@@ -25,7 +27,7 @@ public class GiftCertificateToDtoConverter implements Converter<GiftCertificate,
                 .duration(source.getDuration())
                 .createDate(source.getCreateDate())
                 .lastUpdateDate(source.getLastUpdateDate())
-                .tagDtoList(source.getTagList().stream().map(tagToDtoConverter::convert).toList())
+                .tagDtoList(source.getTagList().stream().map(tagToDtoConverter::convert).collect(Collectors.toList()))
                 .build();
     }
 }

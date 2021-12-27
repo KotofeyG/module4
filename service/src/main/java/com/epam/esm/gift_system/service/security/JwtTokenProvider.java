@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -20,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
+
+import static org.springframework.security.core.context.SecurityContextHolder.*;
 
 @Component
 public class JwtTokenProvider {
@@ -68,7 +69,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = getContext().getAuthentication();
         if (Objects.nonNull(authentication)) {
             return authentication;
         }

@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.epam.esm.gift_system.service.exception.ErrorCode.NON_EXISTENT_ENTITY;
 import static com.epam.esm.gift_system.service.exception.ErrorCode.NON_EXISTENT_PAGE;
@@ -55,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
         checkRequestOrderDto(orderDto);
         User user = userService.findUserById(orderDto.getUserId());
         List<GiftCertificate> certificateList = orderDto.getCertificateIdList().stream()
-                .map(certificateService::findCertificateById).toList();
+                .map(certificateService::findCertificateById).collect(Collectors.toList());
         Order order = Order.builder().user(user).certificateList(certificateList).build();
         return dtoConverter.convertEntityIntoDto(orderRepository.save(order));
     }
