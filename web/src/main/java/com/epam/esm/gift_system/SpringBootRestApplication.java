@@ -2,6 +2,7 @@ package com.epam.esm.gift_system;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @SpringBootApplication
-public class SpringBootRestApplication implements WebMvcConfigurer {
+public class SpringBootRestApplication extends SpringBootServletInitializer implements WebMvcConfigurer {
     private static final String ERROR_MESSAGES_FILE = "error_messages";
     private static final String ENCODING = "UTF-8";
 
