@@ -15,7 +15,7 @@
   <groupId>com.epam.esm.gift_system</groupId>
   <artifactId>web</artifactId>
   <version>1.0.0</version>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
 
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
