@@ -20,6 +20,7 @@
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
+    <start-class>com.epam.esm.gift_system.SpringBootRestApplication</start-class>
   </properties>
 
   <dependencies>
@@ -39,14 +40,6 @@
       <artifactId>spring-boot-starter-tomcat</artifactId>
       <scope>provided</scope>
     </dependency>
-
-<!--    &lt;!&ndash; https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api &ndash;&gt;-->
-<!--    <dependency>-->
-<!--      <groupId>javax.servlet</groupId>-->
-<!--      <artifactId>javax.servlet-api</artifactId>-->
-<!--      <version>4.0.1</version>-->
-<!--      <scope>provided</scope>-->
-<!--    </dependency>-->
 
   </dependencies>
 
